@@ -1,6 +1,8 @@
 [![unit-tests](https://github.com/yegappan/lsp/workflows/unit-tests/badge.svg?branch=main)](https://github.com/yegappan/lsp/actions/workflows/unitests.yml?query=branch%3Amain)
 
-Language Server Protocol (LSP) plugin for Vim. You need Vim version 9.0 or above to use this plugin.  This plugin is written using only the Vim9 script.
+# Language Server Protocol (LSP) plugin for Vim.
+
+You need Vim version 9.0 or above to use this plugin.  This plugin is written using only the Vim9 script.
 
 ## Installation
 
@@ -46,6 +48,13 @@ The following language server protocol (LSP) features are supported:
 * Visually select symbol block/region
 * Semantic Highlight
 
+### Semantic highlighting
+
+Semantic `string` tokens are intentionally ignored so that language-specific
+syntax highlighting can handle strings and escape sequences. Semantic
+highlighting remains enabled for types, functions, variables, properties,
+and other supported token types.
+
 ## Configuration
 
 To use the plugin features with a particular file type(s), you need to first register a LSP server for that file type(s).
@@ -90,7 +99,7 @@ call LspAddServer([#{
 	\  }])
 ```
 
-The above lines register the language servers for C/C++, Javascript/Typescript, Go and Rust file types. 
+The above lines register the language servers for C/C++, Javascript/Typescript, Go and Rust file types.
 Refer to [Configs.md](https://github.com/yegappan/lsp/blob/main/doc/configs.md) for various language server specific configuration.
 
 To register a LSP server, the following information is needed:
@@ -100,7 +109,7 @@ Field|Description
 `filetype`|One or more file types supported by the LSP server.  This can be a String or a List. To specify multiple multiple file types, use a List.
 `path`|complete path to the LSP server executable (without any arguments).
 `args`|a list of command-line arguments passed to the LSP server. Each argument is a separate List item.
-`initializationOptions`|User provided initialization options. May be of any type. For example the *intelephense* PHP language server accept several options here with the License Key among others. 
+`initializationOptions`|User provided initialization options. May be of any type. For example the *intelephense* PHP language server accept several options here with the License Key among others.
 `customNotificationHandlers`|A dictionary of notifications and functions that can be specified to add support for custom language server notifications.
 `customRequestHandlers`|A dictionary of request handlers and functions that can be specified to add support for custom language server requests replies.
 `features`|A dictionary of booleans that can be specified to toggle what things a given LSP is providing (folding, goto definition, etc) This is useful when running multiple servers in one buffer.

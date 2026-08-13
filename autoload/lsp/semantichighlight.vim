@@ -166,9 +166,14 @@ def ProcessSemanticTokens(lspserver: dict<any>, bnr: number, tokens: list<number
     endif
   var typeStr = lspserverTokenTypes[tokenType]
 
-  # Local patch:
-  # Ignore semantic string tokens so language syntax highlighting can
-  # distinguish escape sequences such as \n and \t.
+  # Skip semantic string tokens.
+  #
+  # Language servers may classify an entire string, including escape
+  # sequences, as a "string" semantic token. Applying semantic highlighting
+  # to that range can override language-specific syntax highlighting.
+  #
+  # Let the syntax file handle strings and escape sequences, while keeping
+  # semantic highlighting for types, functions, variables, properties, etc.
   if typeStr ==# 'string'
     i += 5
     continue
