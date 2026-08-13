@@ -164,35 +164,44 @@ def ProcessSemanticTokens(lspserver: dict<any>, bnr: number, tokens: list<number
       i += 5
       continue
     endif
+  var typeStr = lspserverTokenTypes[tokenType]
 
-    var typeStr = lspserverTokenTypes[tokenType]
-    if tokenMods > 0
-      var modStr = ParseSemanticTokenMods(lspserverTokenMods, tokenMods)
-    endif
-
-    # Decode the semantic token line number, column number and length to
-    # UTF-32 encoding.
-    var r = {
-      start: {
-	line: lnum - 1,
-	character: charIdx
-      },
-      end: {
-	line: lnum - 1,
-	character: charIdx + length
-      }
-    }
-    offset.DecodeRange(lspserver, bnr, r)
-
-    if !props->has_key(typeStr)
-      props[typeStr] = []
-    endif
-
-    var startByteIdx = util.GetLineByteFromPos(bnr, r.start)
-    var endByteIdx   = util.GetLineByteFromPos(bnr, r.end)
-    props[typeStr]->add([lnum, startByteIdx + 1, lnum, endByteIdx + 1])
-
+  # Local patch:
+  # Ignore semantic string tokens so language syntax highlighting can
+  # distinguish escape sequences such as \n and \t.
+  if typeStr ==# 'string'
     i += 5
+    continue
+  endif
+
+if tokenMods > 0
+  var modStr = ParseSemanticTokenMods(lspserverTokenMods, tokenMods)
+endif
+
+# Decode the semantic token line number, column number and length to
+# UTF-32 encoding.
+var r = {
+  start: {
+    line: lnum - 1,
+    character: charIdx
+  },
+  end: {
+    line: lnum - 1,
+    character: charIdx + length
+  }
+}
+offset.DecodeRange(lspserver, bnr, r)
+
+if !props->has_key(typeStr)
+  props[typeStr] = []
+endif
+
+var startByteIdx = util.GetLineByteFromPos(bnr, r.start)
+var endByteIdx   = util.GetLineByteFromPos(bnr, r.end)
+props[typeStr]->add([lnum, startByteIdx + 1, lnum, endByteIdx + 1])
+
+i += 5
+
   endwhile
 
   return props
